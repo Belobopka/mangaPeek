@@ -4,8 +4,8 @@ export const maxHotItems = 5;
 
 export const moduleName = 'mangaFox';
 
-export const screenNames = { 
-    Chapter: { name: moduleName + 'Chapter' }, 
-    ChaptersList: { name: moduleName + 'ChaptersList' },
-    Main: { name: moduleName + 'Main' },
+export const screenNames = {
+  Chapter: { name: `${moduleName}Chapter` },
+  ChaptersList: { name: `${moduleName}ChaptersList` },
+  Main: { name: `${moduleName}Main` },
 };

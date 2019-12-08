@@ -3,7 +3,7 @@
         "react-native/react-native": true,
         "commonjs": true
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "airbnb"],
     "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
@@ -17,6 +17,7 @@
         "react-native"
     ],
     "rules": {
+        "linebreak-style": 0,
         "react-native/no-unused-styles": 2,
         "react-native/split-platform-components": 2,
         "react-native/no-inline-styles": 2,

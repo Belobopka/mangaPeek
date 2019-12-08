@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   Modal,
@@ -7,8 +7,15 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-export default class Error extends React.Component {
 
+const ErrorModal = () => {
+  const [modalVisible, setModal] = useState(false);
+  return (
+    <View />
+  );
+};
+
+export default class Error extends React.Component {
   state = {
     modalVisible: true,
   };
@@ -17,20 +24,15 @@ export default class Error extends React.Component {
     this.setState({ modalVisible: isVisible });
   }
 
-  onRequestClose = () => {
-
-  }
-
   render() {
     const { children, err } = this.props;
-    console.log('render Error', this.state.modalVisible && err);
     return (
       <View>
         {children}
       </View>
       // err ?
       // (
-      // <View style={{marginTop: 22}}> 
+      // <View style={{marginTop: 22}}>
       //   <Modal
       //     animationType="slide"
       //     transparent={false}
@@ -53,7 +55,7 @@ export default class Error extends React.Component {
       // </View>
       // )
       // :
-      // children 
-      );
+      // children
+    );
   }
 }

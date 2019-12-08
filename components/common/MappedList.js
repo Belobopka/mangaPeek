@@ -10,29 +10,25 @@ import {
 export default ({ list, openMangaLink, styles }) => {
   const keyExtractor = (item, index) => item.name || index.toString();
 
-  const touchableOpacityOnPress = (item) => () => {
-    return openMangaLink(item);
-  };
+  const touchableOpacityOnPress = item => () => openMangaLink(item);
 
   return (list.map(
-    (item, index) => {
-      return (
-        <TouchableOpacity 
-          onPress={touchableOpacityOnPress(item)} 
-          style={styles.touchableOpacity} 
-          key={keyExtractor(item.name, index)}
-        >
-          {item.img && (
+    (item, index) => (
+      <TouchableOpacity
+        onPress={touchableOpacityOnPress(item)}
+        style={styles.touchableOpacity}
+        key={keyExtractor(item.name, index)}
+      >
+        {item.img && (
           <Image
             style={styles.itemImage}
-            source={{uri: item.img}}
+            source={{ uri: item.img }}
           />
-          )}
-          <View style={styles.itemTextContainer}>
-            <Text style={styles.itemText}>{`${item.name}`}</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    }
+        )}
+        <View style={styles.itemTextContainer}>
+          <Text style={styles.itemText}>{`${item.name}`}</Text>
+        </View>
+      </TouchableOpacity>
+    ),
   ));
 };

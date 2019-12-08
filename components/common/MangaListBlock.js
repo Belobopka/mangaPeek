@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { PureComponent } from 'react';
 import {
-    Text,
-    ScrollView,
-    View,
-    ActivityIndicator,
+  Text,
+  ScrollView,
+  View,
+  ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -19,13 +19,14 @@ class MangaList extends PureComponent {
     styles: PropTypes.shape({}).isRequired,
     getList: PropTypes.func.isRequired,
   };
+
   static defaultProps = {
     list: [],
   };
 
   componentDidMount() {
     const { getList, list } = this.props;
-    if(list.length > 0) {
+    if (list.length > 0) {
       return;
     }
     getList();
@@ -49,11 +50,10 @@ class MangaList extends PureComponent {
             <MappedList {...this.props} />
           </ScrollView>
         </View>
-        ) :
-        <ActivityIndicator />
-      );
+      )
+        : <ActivityIndicator />
+    );
   }
 }
 
 export default MangaList;
-

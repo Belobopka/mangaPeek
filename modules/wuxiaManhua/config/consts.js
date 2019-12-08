@@ -8,8 +8,8 @@ export const scrollFilter = true;
 
 export const isNovel = true;
 
-export const screenNames = { 
-    Chapter: { name: moduleName + 'Chapter' }, 
-    ChaptersList: { name: moduleName + 'ChaptersList' },
-    Main: { name: moduleName + 'Main' },
+export const screenNames = {
+  Chapter: { name: `${moduleName}Chapter` },
+  ChaptersList: { name: `${moduleName}ChaptersList` },
+  Main: { name: `${moduleName}Main` },
 };

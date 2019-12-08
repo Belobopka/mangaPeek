@@ -7,12 +7,10 @@ import {
 
 // import styles from './styles/MangaList';
 
-export default ({ text, styles }) => {
-  return (
-    <ScrollView>
-      <Text> 
-        {text}
-      </Text>
-    </ScrollView>
+export default ({ text, styles }) => (
+  <ScrollView>
+    <Text>
+      {text}
+    </Text>
+  </ScrollView>
 );
-};
