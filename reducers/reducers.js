@@ -37,6 +37,7 @@ const getDeep = (state, name, params) => {
 
 const initialNavigatorState = AppNavigator.router.getStateForAction(NavigationActions.init());
 
+// TODO refactor reducer, should remove some sets, clear if conditions from state
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_MANGA_LIST: {
