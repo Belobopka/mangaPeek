@@ -4,6 +4,42 @@ import { initState as initialState } from '../store';
 import AppNavigator from '../navigation/AppNavigator';
 import { actionTypes } from '../actions/common';
 
+export const initState = {
+  mangaData: null,
+  mangaList: {
+    isLoading: true,
+    list: null,
+  },
+  mangaGenres: null,
+  mangaChapters: { isLoading: true, mangaChaptersList: null },
+  isLoading: false,
+  imagesInfo: {
+    err: false,
+    isLoading: true,
+    imagesArray: { list: [], index: null, isLoading: true },
+    progressBar: null,
+    imageCount: null,
+  },
+  imagesInfoPreload: {
+    err: false,
+    isLoading: true,
+    imagesArray: { list: [], index: null, isLoading: true },
+    progressBar: null,
+    imageCount: null,
+  },
+  filter: {
+    filterUrl: null,
+  },
+  chapterPromise: null,
+  preloadChapterPromise: null,
+  moduleName: 'mangaFox',
+  // merge Categories, make multiple blocks like hotCategory: [block1, bloc2 ... blockn]
+  hotCategories: {},
+  readingNowCategories: {},
+  recommendedCategories: {},
+  mangaInfo: null,
+};
+
 
 const deepRec = (obj, deep, params, index = 0, state = {}) => {
   let newObj = obj[deep[index]];
@@ -27,9 +63,8 @@ const getDeep = (state, name, params) => {
   return { ...state, [deep[0]]: innerObj };
 };
 
-const initialNavigatorState = AppNavigator.router.getStateForAction(NavigationActions.init());
 
-const appReducer = (state = initialState, action) => {
+const homeReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_MANGA_LIST: {
       return { ...state, mangaList: { ...state.mangaList, isLoading: false, list: action.payload.list } };
@@ -41,9 +76,12 @@ const appReducer = (state = initialState, action) => {
     case actionTypes.SET_MANGA_GENRES: {
       return { ...state, mangaGenres: action.payload.mangaGenres };
     }
-    case actionTypes.SET_LOADING_STATE: {
-      const { isLoading, name } = action.payload;
-      return getDeep(state, name, { isLoading, err: false });
+    case actionTypes.START_LOADING_BLOCK: {
+      const { isLoading, blockName } = action.payload;
+      return { ...state, [blockName]: { isLoading, err: false } }
+    }
+    case actionTypes.END_LOADING_BLOCK: {
+      
     }
     case actionTypes.SET_GENRE_CHECKBOX: {
       const { index, isActive } = action.payload;
@@ -117,14 +155,4 @@ const appReducer = (state = initialState, action) => {
   return state;
 };
 
-const navReducer = (state = initialNavigatorState, action) => {
-  const nextState = AppNavigator.router.getStateForAction(action, state);
-  return nextState || state;
-};
-
-const reducer = combineReducers({
-  appReducer,
-  nav: navReducer,
-});
-
-export default reducer;
+export default homeReducer;

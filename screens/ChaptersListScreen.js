@@ -55,6 +55,7 @@ class ChaptersList extends React.Component {
 
     keyExtractor = (item, index) => item.name || index.toString();
 
+    // TODO  feature/novel downloading support
     // downloadAllNovel = () => {
     //   const {
     //     navigation: { state: { params: { moduleName } = {} } },
@@ -97,11 +98,11 @@ class ChaptersList extends React.Component {
 }
 
 const mapStateToProps =
-  ({ appReducer: { mangaChapters: { mangaChaptersList, isLoading }, mangaInfo } = {} }) => ({
-    mangaChaptersList,
-    isLoading,
-    mangaInfo,
-  });
+({ appReducer: { mangaChapters: { mangaChaptersList, isLoading }, mangaInfo } = {} }) => ({
+  mangaChaptersList,
+  isLoading,
+  mangaInfo,
+});
 
 const mapDispatchToProps = dispatch => ({
   getMangaChapters: bindActionCreators(getMangaChaptersList, dispatch),

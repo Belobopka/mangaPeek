@@ -15,4 +15,9 @@ export default StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: vars.darknessWhite,
   },
+  header: {
+    alignItems: 'stretch',
+    flex: 1,
+    justifyContent: 'center',
+  },
 });

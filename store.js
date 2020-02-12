@@ -1,3 +1,9 @@
+/*
+  change redux logic https://rangle.slides.com/yazanalaboudi/deck#/2
+  split redux logic to some independent blocks
+  use selectors
+*/
+
 export const initState = {
   mangaData: null,
   mangaList: {
@@ -27,9 +33,11 @@ export const initState = {
   chapterPromise: null,
   preloadChapterPromise: null,
   moduleName: 'mangaFox',
+  // merge Categories, make multiple blocks like hotCategory: [block1, bloc2 ... blockn]
   hotCategories: {},
   readingNowCategories: {},
   recommendedCategories: {},
   mangaInfo: null,
 };
+
 export default initState;

@@ -11,12 +11,14 @@ import PropTypes from 'prop-types';
 // import styles from './styles/MangaList';
 import MappedList from './MappedList';
 
-class MangaList extends PureComponent {
+class Block extends PureComponent {
   static propTypes = {
     list: PropTypes.arrayOf(PropTypes.shape({})),
-    blockName: PropTypes.string.isRequired,
     openMangaLink: PropTypes.func.isRequired,
-    styles: PropTypes.shape({}).isRequired,
+    category: PropTypes.shape({
+      blockName: PropTypes.string,
+      styles: PropTypes.shape({}),
+    }).isRequired,
     getList: PropTypes.func.isRequired,
   };
 
@@ -35,7 +37,7 @@ class MangaList extends PureComponent {
   keyExtractor = (item, index) => item.name || index.toString();
 
   render() {
-    const { list, blockName, styles } = this.props;
+    const { list, category: { blockName, styles } } = this.props;
     return (
       list.length > 0 ? (
         <View style={styles.contentView}>
@@ -56,4 +58,4 @@ class MangaList extends PureComponent {
   }
 }
 
-export default MangaList;
+export default Block;

@@ -7,8 +7,6 @@ import {
   View,
   ViewPagerAndroid,
   Image,
-  Modal,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -21,8 +19,6 @@ import homeStyles from './styles/Home';
 import MangaListBlock from '../components/common/MangaListBlock';
 import modules from '../modules';
 import rightArrow from '../assets/images/right_arrow.png';
-// import ErrorHoc from '../components/common/ErrorHoc';
-// import ModuleBlocks from '../components/common/ModuleBlocks';
 
 class Home extends React.Component {
     static propTypes = {
@@ -40,7 +36,7 @@ class Home extends React.Component {
 
     keyExtractor = (item, index) => item.name || index.toString();
 
-    openMangaSite = (mod) => {
+    openMangaSite = mod => () => {
       const { navigation: { navigate } } = this.props;
       navigate(screenNames.Site.name, mod);
     }
@@ -83,7 +79,10 @@ class Home extends React.Component {
           return (
             // eslint-disable-next-line react/no-array-index-key
             <View style={homeStyles.siteContainer} key={index}>
-              <TouchableOpacity onPress={() => { this.openMangaSite({ moduleName, searchPath, mangaDirectoryUrl }); }} style={homeStyles.touchableOpacity}>
+              <TouchableOpacity
+                onPress={this.openMangaSite({ moduleName, searchPath, mangaDirectoryUrl })}
+                style={homeStyles.touchableOpacity}
+              >
                 <Text style={homeStyles.blockName}>
                   {moduleName.toUpperCase()}
                   <Image

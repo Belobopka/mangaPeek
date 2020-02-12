@@ -13,16 +13,11 @@ import { setLoadingState } from '../actions/common';
 import { screenNames } from '../constants/consts';
 import styles from './styles/Chapter';
 
-class Header extends React.Component {
-  render() {
-    const { chapter } = this.props;
-    return (
-      <View style={{ alignItems: 'stretch', flex: 1, justifyContent: 'center' }}>
-        <Text>{chapter.name}</Text>
-      </View>
-    );
-  }
-}
+const Header = ({ chapter: { name } }) => (
+  <View style={styles.header}>
+    <Text>{name}</Text>
+  </View>
+);
 
 class Chapter extends React.Component {
     static navigationOptions = ({ navigation: { state: { params: { chapter } = {} } } }) => ({
@@ -37,6 +32,18 @@ class Chapter extends React.Component {
       changeLoadingState: PropTypes.func.isRequired,
       rejectChapterLoad: PropTypes.func.isRequired,
     };
+
+    componentDidMount() {
+      const {
+        navigation: { state: { params: { moduleName, chapter, index } = {} } }, fetchChapter, changeLoadingState,
+        mangaChaptersList,
+      } = this.props;
+      changeLoadingState(true, 'imagesInfo.imagesArray');
+      fetchChapter(chapter.link, moduleName, index);
+      if (mangaChaptersList.length > index + 1) {
+        fetchChapter(mangaChaptersList[index + 1].link, moduleName, index + 1, true, true);
+      }
+    }
 
     shouldComponentUpdate(nextProps) {
       const { imagesPreload: { imagesPreviewList: prevPreviewList }, images: prevImages, navigation } = this.props;
@@ -80,18 +87,6 @@ class Chapter extends React.Component {
       }
     }
 
-    componentDidMount() {
-      const {
-        navigation: { state: { params: { moduleName, chapter, index } = {} } }, fetchChapter, changeLoadingState,
-        mangaChaptersList,
-      } = this.props;
-      changeLoadingState(true, 'imagesInfo.imagesArray');
-      fetchChapter(chapter.link, moduleName, index);
-      if (mangaChaptersList.length > index + 1) {
-        fetchChapter(mangaChaptersList[index + 1].link, moduleName, index + 1, true, true);
-      }
-    }
-
     componentWillUnmount() {
       const { changeLoadingState, rejectChapterLoad } = this.props;
       changeLoadingState(true, 'imagesInfo.imagesArray');
@@ -112,7 +107,7 @@ class Chapter extends React.Component {
     }
 
     renderCorrectView = () => {
-      const { navigation: { state: { params: { isNovel = false } = {} } }, images: { imagesList } } = this.props;
+      const { images: { imagesList } } = this.props;
       const { list, preload } = this.state;
       const imageUrls = preload ? list : imagesList;
       return (
@@ -126,16 +121,7 @@ class Chapter extends React.Component {
     }
 
     render() {
-      const { images: { isLoading, progressBar }, err } = this.props;
-      // if (isLoading && err) {
-      //     return (
-      //       <View>
-      //         <Text>
-      //           {err.toString()}
-      //         </Text>
-      //       </View>
-      //     );
-      // }
+      const { images: { isLoading, progressBar } } = this.props;
       return (
         <View style={styles.container}>
           {isLoading
@@ -161,7 +147,6 @@ const mapStateToProps = ({
     },
     imagesInfo: {
       err,
-      imageCount,
       progressBar,
       imagesArray: { list: imagesList, isLoading },
     },
