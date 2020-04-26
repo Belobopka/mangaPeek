@@ -11,8 +11,8 @@ import PropTypes from 'prop-types';
 import rightArrow from '../../assets/images/right_arrow.png';
 
 
-const Title = ({ openMangaSite, homeStyles, key, moduleName, children }) => (
-  <View style={homeStyles.siteContainer} key={key}>
+const Title = ({ openMangaSite, homeStyles, moduleName, children }) => (
+  <View style={homeStyles.siteContainer}>
     <TouchableOpacity
       onPress={openMangaSite}
       style={homeStyles.touchableOpacity}

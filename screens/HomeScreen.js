@@ -11,12 +11,11 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-
 import { fetchCategoryAsync } from '../actions';
 import { setError } from '../actions/common';
 import { screenNames } from '../constants/consts';
 import homeStyles from './styles/Home';
-import MangaListBlock from '../components/common/MangaListBlock';
+import MangaListBlock from '../components/MangaList/Block';
 import modules from '../modules';
 import rightArrow from '../assets/images/right_arrow.png';
 
@@ -47,10 +46,11 @@ class Home extends React.Component {
     }
 
     createBlock = ({
-      viewStyles, category, list, moduleName, isNovel, getList, key,
+      viewStyles, category, list, moduleName, isNovel, getList,
     }) => (
-      <View style={viewStyles} key={key}>
+      <View style={viewStyles} key={category.blockName}>
         <MangaListBlock
+          category={category}
           blockName={category.blockName}
           styles={category.styles}
           list={list}
@@ -72,7 +72,7 @@ class Home extends React.Component {
           const { store: { [listName]: { [moduleName]: list } } } = this.props;
           const getList = this.getCategory(moduleName, path, listName, customParser);
           return this.createBlock({
-            viewStyles, category: { styles, blockName }, list, getList, key: blockName, moduleName,
+            viewStyles, category: { styles, blockName }, list, getList, moduleName,
           });
         });
         if (index === 0) {
@@ -120,15 +120,11 @@ class Home extends React.Component {
       // for small blocks with manga of selected site
       // renderSite blocks like hot releases
       return (
-        err && modalVisible ? (
-          <View />
-        ) : (
-          <ViewPagerAndroid
-            style={homeStyles.container}
-          >
-            {this.createBlocks()}
-          </ViewPagerAndroid>
-        )
+        <ViewPagerAndroid
+          style={homeStyles.container}
+        >
+          {this.createBlocks()}
+        </ViewPagerAndroid>
       );
     }
 }

@@ -17,9 +17,8 @@ export default StyleSheet.create({
     left: '50%',
   },
   titleContainer: {
-    flex: 0.3,
-  },
-  titleContainerExpanded: {
+    display: 'flex',
+    flexDirection: 'row',
     flex: 0.7,
   },
   touchableOpacity: {
@@ -36,7 +35,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
   },
   itemTextContainer: {
-    maxWidth: '75%',
+    maxWidth: '85%',
     display: 'flex',
     flexDirection: 'row',
   },
@@ -45,10 +44,11 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginBottom: '2%',
   },
   flatList: {
     marginTop: 10,
-    flex: 0.7,
+    flex: 0.3,
   },
   genre: {
     paddingLeft: 5,

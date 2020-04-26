@@ -19,7 +19,7 @@ const bodyNovel = {
   title: '',
 };
 
-export const fetchAll = mangaChaptersList => async function (dispatch, getState) {
+export const fetchAll = mangaChaptersList => (async function(dispatch, getState) {
   let accumulator = [];
   // const element = await fetchChapter(mangaChaptersList[6].link)(dispatch, getState).promise;
   // for (let index = 0; index < mangaChaptersList.length; index++) {
@@ -33,9 +33,9 @@ export const fetchAll = mangaChaptersList => async function (dispatch, getState)
     return fetchChapterMultipleImplement(index.link)(dispatch, getState).promise;
   }),
   Promise.resolve());
-};
+});
 
-export const fetchHotCategoryAsync = () => async function (dispatch) {
+export const fetchHotCategoryAsync = () => (async function(dispatch) {
   // eslint-disable-next-line no-undef
   const myHeaders = new Headers();
   myHeaders.append('Referer', hotPath);
@@ -60,9 +60,9 @@ export const fetchHotCategoryAsync = () => async function (dispatch) {
   } catch (err) {
     console.log(err);
   }
-};
+});
 
-export const fetchMangaGenresAsync = callback => async function (dispatch) {
+export const fetchMangaGenresAsync = callback => (async function(dispatch) {
   // eslint-disable-next-line no-undef
   // const myHeaders = new Headers();
   // myHeaders.append('Content-Type', 'text/html');
@@ -104,9 +104,9 @@ export const fetchMangaGenresAsync = callback => async function (dispatch) {
   //     dispatch(setLoadingState(false, 'mangaList'));
   //     console.log(err);
   // }
-};
+});
 
-export const fetchMangaListAsync = url => async function (dispatch) {
+export const fetchMangaListAsync = url => (async function(dispatch) {
   dispatch(setLoadingState(true, 'mangaList'));
   // eslint-disable-next-line no-undef
   const myHeaders = new Headers();
@@ -134,7 +134,7 @@ export const fetchMangaListAsync = url => async function (dispatch) {
     console.log(err);
     dispatch(setLoadingState(false, 'mangaList'));
   }
-};
+});
 
 export const getMangaChaptersList = url => async (dispatch) => {
   dispatch(setLoadingState(true, 'mangaChapters'));

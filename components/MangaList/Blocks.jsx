@@ -7,7 +7,7 @@ import { fetchCategoryAsync } from '../../actions';
 import modules from '../../modules';
 import { screenNames } from '../../constants/consts';
 import homeStyles from '../../screens/styles/Home';
-import Title from './Title';
+import BlockTitle from './BlockTitle';
 import BlockWrapper from './BlockWrapper';
 
 class HorizontalBlocks extends React.PureComponent {
@@ -17,45 +17,47 @@ class HorizontalBlocks extends React.PureComponent {
     getListCategory: PropTypes.func.isRequired,
   };
 
-  getBlocks = () => {
+  getBlockWrapper = ({
+    styles, name: blockName, listName, viewStyles, path, customParser,
+  }) => {
+    const { store: { moduleName, [listName]: { [moduleName]: list } } } = this.props;
+    const getList = this.getCategory(moduleName, path, listName, customParser);
+    return (
+      <BlockWrapper
+        viewStyles={viewStyles}
+        category={{ styles, blockName }}
+        list={list}
+        getList={getList}
+        key={blockName}
+        moduleName={moduleName}
+        openMangaLink={this.openMangaLink}
+      />
+    );
+  };
+
+  get blocks() {
     const { store: { moduleName } } = this.props;
     const moduleBlock = modules[moduleName];
     const { blocksHorizontal, searchPath, mangaDirectoryUrl } = moduleBlock;
-    const blocksHoriz = blocksHorizontal.map((block, index) => {
-      const blocksH = block.map((item) => {
-        const {
-          styles, name: blockName, listName, viewStyles, path, customParser,
-        } = item;
-        const { store: { [listName]: { [moduleName]: list } } } = this.props;
-        const getList = this.getCategory(moduleName, path, listName, customParser);
-        return (
-          <BlockWrapper
-            viewStyles={viewStyles}
-            category={{ styles, blockName }}
-            list={list}
-            getList={getList}
-            key={blockName}
-            moduleName={moduleName}
-            openMangaLink={this.openMangaLink}
-          />
-        );
-      });
+    const moduleHorizontalBlockList = blocksHorizontal.map((block, index) => {
+      const entity = block.map(item => this.getBlockWrapper(item));
+
       if (index === 0) {
         return (
-          <Title
+          <BlockTitle
             openMangaSite={this.openMangaSite({ moduleName, searchPath, mangaDirectoryUrl })}
             homeStyles={homeStyles}
             // eslint-disable-next-line react/no-array-index-key
             key={index}
             moduleName={moduleName}
           >
-            {blocksH}
-          </Title>
+            {entity}
+          </BlockTitle>
         );
       }
-      return blocksH;
+      return entity;
     });
-    return blocksHoriz;
+    return moduleHorizontalBlockList;
   }
 
   getCategory = (moduleName, path, blockName, customParser) => () => {
@@ -74,7 +76,7 @@ class HorizontalBlocks extends React.PureComponent {
   };
 
   render() {
-    return (this.getBlocks());
+    return this.blocks;
   }
 }
 
@@ -82,8 +84,8 @@ const mapDispatchToProps = dispatch => ({
   getListCategory: bindActionCreators(fetchCategoryAsync, dispatch),
 });
 
-const mapStateToProps = state => ({
-  store: state.appReducer,
+const mapStateToProps = ({ state: { appReducer } }) => ({
+  store: appReducer,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HorizontalBlocks);

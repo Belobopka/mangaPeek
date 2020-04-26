@@ -4,7 +4,7 @@ import MappedItem from './MappedItem';
 
 const keyExtractor = (item, index) => item.name || index.toString();
 
-export default React.memo(({ list, openMangaLink, category: { styles } }) => (
+const MappedList = ({ list, openMangaLink, category: { styles } }) => (
   list.map(
     (item, index) => (
       <MappedItem
@@ -15,4 +15,6 @@ export default React.memo(({ list, openMangaLink, category: { styles } }) => (
       />
     ),
   )
-));
+);
+
+export default MappedList;

@@ -7,14 +7,13 @@ import {
   View,
 } from 'react-native';
 
-export default React.memo(({ openMangaLink, styles, item, key }) => {
+export default React.memo(({ openMangaLink, styles, item }) => {
   const touchableOpacityOnPress = () => openMangaLink(item);
 
   return (
     <TouchableOpacity
       onPress={touchableOpacityOnPress}
       style={styles.touchableOpacity}
-      key={key}
     >
       {item.img && (
         <Image

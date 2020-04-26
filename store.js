@@ -4,6 +4,8 @@
   use selectors
 */
 
+/* Load on failed image */
+
 export const initState = {
   mangaData: null,
   mangaList: {

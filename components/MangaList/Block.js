@@ -17,7 +17,11 @@ class Block extends PureComponent {
     openMangaLink: PropTypes.func.isRequired,
     category: PropTypes.shape({
       blockName: PropTypes.string,
-      styles: PropTypes.shape({}),
+      styles: PropTypes.shape({
+        contentView: PropTypes.shape({}),
+        blockName: PropTypes.shape({}),
+        flatList: PropTypes.shape({}),
+      }),
     }).isRequired,
     getList: PropTypes.func.isRequired,
   };

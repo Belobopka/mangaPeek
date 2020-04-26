@@ -11,7 +11,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-
+import Footer from '../components/common/Footer';
 import Title from '../components/common/Title';
 import { getMangaChaptersList, fetchAll } from '../actions';
 import { screenNames } from '../constants/consts';
@@ -97,8 +97,7 @@ class ChaptersList extends React.Component {
     }
 }
 
-const mapStateToProps =
-({ appReducer: { mangaChapters: { mangaChaptersList, isLoading }, mangaInfo } = {} }) => ({
+const mapStateToProps = ({ appReducer: { mangaChapters: { mangaChaptersList, isLoading }, mangaInfo } = {} }) => ({
   mangaChaptersList,
   isLoading,
   mangaInfo,

@@ -9,7 +9,7 @@ import {
 import PropTypes from 'prop-types';
 
 import right_arrow from '../../assets/images/right_arrow.png';
-import MangaListBlock from './MangaListBlock';
+import MangaListBlock from '../MangaList/Block';
 import modules from '../../modules';
 
 
