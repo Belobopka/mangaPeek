@@ -40,7 +40,6 @@ export const initState = {
   mangaInfo: null,
 };
 
-
 const deepRec = (obj, deep, params, index = 0, state = {}) => {
   let newObj = obj[deep[index]];
   let editedState = { ...obj, [deep[index]]: newObj };
@@ -52,7 +51,6 @@ const deepRec = (obj, deep, params, index = 0, state = {}) => {
   return deepRec(newObj, deep, params, index + 1, state);
 };
 
-
 const getDeep = (state, name, params) => {
   const deep = name.split('.');
 
@@ -63,11 +61,17 @@ const getDeep = (state, name, params) => {
   return { ...state, [deep[0]]: innerObj };
 };
 
-
 const homeReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_MANGA_LIST: {
-      return { ...state, mangaList: { ...state.mangaList, isLoading: false, list: action.payload.list } };
+      return {
+        ...state,
+        mangaList: {
+          ...state.mangaList,
+          isLoading: false,
+          list: action.payload.list,
+        },
+      };
     }
     case actionTypes.CHANGE_MODULE_NAME: {
       const { moduleName } = action.payload;
@@ -78,10 +82,7 @@ const homeReducer = (state = initialState, action) => {
     }
     case actionTypes.START_LOADING_BLOCK: {
       const { isLoading, blockName } = action.payload;
-      return { ...state, [blockName]: { isLoading, err: false } }
-    }
-    case actionTypes.END_LOADING_BLOCK: {
-      
+      return { ...state, [blockName]: { isLoading, err: false } };
     }
     case actionTypes.SET_GENRE_CHECKBOX: {
       const { index, isActive } = action.payload;
@@ -100,37 +101,60 @@ const homeReducer = (state = initialState, action) => {
     }
     case actionTypes.SET_LOADING_CHAPTER: {
       const { chapterPromise, preload } = action.payload;
-      return { ...state, [preload ? 'preloadChapterPromise' : 'chapterPromise']: chapterPromise };
+      return {
+        ...state,
+        [preload ? 'preloadChapterPromise' : 'chapterPromise']: chapterPromise,
+      };
     }
     case actionTypes.SET_CHAPTERS_LIST: {
       const { mangaChaptersList } = action.payload;
-      return { ...state, mangaChapters: { mangaChaptersList, isLoading: false } };
+      return {
+        ...state,
+        mangaChapters: { mangaChaptersList, isLoading: false },
+      };
     }
     case actionTypes.SAVE_CHAPTER_IMAGES: {
       const {
-        imagesArray, imagesArray: { err }, index, preload,
+        imagesArray,
+        imagesArray: { err },
+        index,
+        preload,
       } = action.payload;
       const infoName = `imagesInfo${preload ? 'Preload' : ''}`;
-      return err ? { ...state, [infoName]: { ...state[infoName], err } } : {
-        ...state,
-        [infoName]: {
-          ...state[infoName],
-          imagesArray: { list: imagesArray, index, isLoading: false },
-          err: false,
-        },
-      };
+      return err
+        ? { ...state, [infoName]: { ...state[infoName], err } }
+        : {
+            ...state,
+            [infoName]: {
+              ...state[infoName],
+              imagesArray: { list: imagesArray, index, isLoading: false },
+              err: false,
+            },
+          };
     }
     case actionTypes.SET_HOT_CATEGORY: {
       const { moduleName, hotInfo } = action.payload;
-      return { ...state, hotCategories: { ...state.hotCategories, [moduleName]: hotInfo } };
+      return {
+        ...state,
+        hotCategories: { ...state.hotCategories, [moduleName]: hotInfo },
+      };
     }
     case actionTypes.SET_CATEGORY: {
       const { moduleName, list, category } = action.payload;
-      return { ...state, [category]: { ...state[category], [moduleName]: list } };
+      return {
+        ...state,
+        [category]: { ...state[category], [moduleName]: list },
+      };
     }
     case actionTypes.SET_READING_CATEGORY: {
       const { moduleName, readingInfo } = action.payload;
-      return { ...state, readingNowCategories: { ...state.readingNowCategories, [moduleName]: readingInfo } };
+      return {
+        ...state,
+        readingNowCategories: {
+          ...state.readingNowCategories,
+          [moduleName]: readingInfo,
+        },
+      };
     }
     case actionTypes.SET_ERROR: {
       const { err } = action.payload;
@@ -138,11 +162,20 @@ const homeReducer = (state = initialState, action) => {
     }
     case actionTypes.SET_IMAGE_COUNT: {
       const { imageCount } = action.payload;
-      return imageCount ? { ...state, imagesInfo: { ...state.imagesInfo, imageCount } } : state;
+      return imageCount
+        ? { ...state, imagesInfo: { ...state.imagesInfo, imageCount } }
+        : state;
     }
     case actionTypes.SET_PROGRESS_BAR: {
       const { progress } = action.payload;
-      return state.imagesInfo.imageCount ? { ...state, imagesInfo: { ...state.imagesInfo, progressBar: progress / state.imagesInfo.imageCount } }
+      return state.imagesInfo.imageCount
+        ? {
+            ...state,
+            imagesInfo: {
+              ...state.imagesInfo,
+              progressBar: progress / state.imagesInfo.imageCount,
+            },
+          }
         : state;
     }
     case actionTypes.SET_MANGA_INFO: {

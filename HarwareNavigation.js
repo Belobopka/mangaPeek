@@ -25,10 +25,7 @@ class Navigation extends Component {
   render() {
     const { ReduxifiedNav } = this.props;
     return (
-      <ReduxifiedNav
-        state={this.props.state}
-        dispatch={this.props.dispatch}
-      />
+      <ReduxifiedNav state={this.props.state} dispatch={this.props.dispatch} />
     );
   }
 }

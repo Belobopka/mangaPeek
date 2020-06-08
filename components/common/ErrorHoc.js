@@ -1,18 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState } from 'react';
-import {
-  Text,
-  Modal,
-  View,
-  TouchableHighlight,
-} from 'react-native';
-
+import { Text, Modal, View, TouchableHighlight } from 'react-native';
 
 const ErrorModal = () => {
   const [modalVisible, setModal] = useState(false);
-  return (
-    <View />
-  );
+  return <View />;
 };
 
 export default class Error extends React.Component {
@@ -27,9 +19,7 @@ export default class Error extends React.Component {
   render() {
     const { children, err } = this.props;
     return (
-      <View>
-        {children}
-      </View>
+      <View>{children}</View>
       // err ?
       // (
       // <View style={{marginTop: 22}}>

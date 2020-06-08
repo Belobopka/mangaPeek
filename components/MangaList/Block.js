@@ -1,11 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { PureComponent } from 'react';
-import {
-  Text,
-  ScrollView,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import { Text, ScrollView, View, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 
 // import styles from './styles/MangaList';
@@ -41,23 +36,19 @@ class Block extends PureComponent {
   keyExtractor = (item, index) => item.name || index.toString();
 
   render() {
-    const { list, category: { blockName, styles } } = this.props;
-    return (
-      list.length > 0 ? (
-        <View style={styles.contentView}>
-          <Text style={styles.blockName}>
-            {blockName}
-          </Text>
-          <ScrollView
-            nestedScrollEnabled
-            horizontal
-            style={styles.flatList}
-          >
-            <MappedList {...this.props} />
-          </ScrollView>
-        </View>
-      )
-        : <ActivityIndicator />
+    const {
+      list,
+      category: { blockName, styles },
+    } = this.props;
+    return list.length > 0 ? (
+      <View style={styles.contentView}>
+        <Text style={styles.blockName}>{blockName}</Text>
+        <ScrollView nestedScrollEnabled horizontal style={styles.flatList}>
+          <MappedList {...this.props} />
+        </ScrollView>
+      </View>
+    ) : (
+      <ActivityIndicator />
     );
   }
 }

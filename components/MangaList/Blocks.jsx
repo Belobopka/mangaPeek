@@ -18,9 +18,19 @@ class HorizontalBlocks extends React.PureComponent {
   };
 
   getBlockWrapper = ({
-    styles, name: blockName, listName, viewStyles, path, customParser,
+    styles,
+    name: blockName,
+    listName,
+    viewStyles,
+    path,
+    customParser,
   }) => {
-    const { store: { moduleName, [listName]: { [moduleName]: list } } } = this.props;
+    const {
+      store: {
+        moduleName,
+        [listName]: { [moduleName]: list },
+      },
+    } = this.props;
     const getList = this.getCategory(moduleName, path, listName, customParser);
     return (
       <BlockWrapper
@@ -36,7 +46,9 @@ class HorizontalBlocks extends React.PureComponent {
   };
 
   get blocks() {
-    const { store: { moduleName } } = this.props;
+    const {
+      store: { moduleName },
+    } = this.props;
     const moduleBlock = modules[moduleName];
     const { blocksHorizontal, searchPath, mangaDirectoryUrl } = moduleBlock;
     const moduleHorizontalBlockList = blocksHorizontal.map((block, index) => {
@@ -45,7 +57,11 @@ class HorizontalBlocks extends React.PureComponent {
       if (index === 0) {
         return (
           <BlockTitle
-            openMangaSite={this.openMangaSite({ moduleName, searchPath, mangaDirectoryUrl })}
+            openMangaSite={this.openMangaSite({
+              moduleName,
+              searchPath,
+              mangaDirectoryUrl,
+            })}
             homeStyles={homeStyles}
             // eslint-disable-next-line react/no-array-index-key
             key={index}
@@ -63,7 +79,7 @@ class HorizontalBlocks extends React.PureComponent {
   getCategory = (moduleName, path, blockName, customParser) => () => {
     const { getListCategory } = this.props;
     return getListCategory(moduleName, path, blockName, customParser);
-  }
+  };
 
   openMangaLink = (manga, moduleName) => {
     const { navigate } = this.props;

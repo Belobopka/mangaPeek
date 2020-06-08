@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
 
-import {
-  StyleSheet,
-  View,
-  Button,
-  Animated,
-} from 'react-native';
+import { StyleSheet, View, Button, Animated } from 'react-native';
 
-
-const styles = StyleSheet.create({
-});
-
+const styles = StyleSheet.create({});
 
 export default class ExpandPage extends Component {
   constructor(props) {
@@ -24,36 +16,39 @@ export default class ExpandPage extends Component {
   onPress = () => {
     const { menuExpanded } = this.state;
     if (menuExpanded) {
-      this.setState({
-        menuExpanded: false,
-      }, () => {
-        this.yTranslate.setValue(1);
-        Animated.spring(
-          this.yTranslate,
-          {
+      this.setState(
+        {
+          menuExpanded: false,
+        },
+        () => {
+          this.yTranslate.setValue(1);
+          Animated.spring(this.yTranslate, {
             toValue: 0,
             friction: 4,
-          },
-        ).start();
-      });
+          }).start();
+        },
+      );
       return;
     }
-    this.setState({
-      menuExpanded: true,
-    }, () => {
-      this.yTranslate.setValue(0);
-      Animated.spring(
-        this.yTranslate,
-        {
+    this.setState(
+      {
+        menuExpanded: true,
+      },
+      () => {
+        this.yTranslate.setValue(0);
+        Animated.spring(this.yTranslate, {
           toValue: 1,
           // friction: 3,
-        },
-      ).start();
-    });
-  }
+        }).start();
+      },
+    );
+  };
 
   render() {
-    const { props: { style, children }, state: { menuExpanded } } = this;
+    const {
+      props: { style, children },
+      state: { menuExpanded },
+    } = this;
     const menuMoveY = this.yTranslate.interpolate({
       inputRange: [0, 1],
       outputRange: [0, -400],
@@ -61,7 +56,8 @@ export default class ExpandPage extends Component {
 
     return (
       <Animated.View
-        style={[style,
+        style={[
+          style,
           {
             transform: [
               {
@@ -81,7 +77,6 @@ export default class ExpandPage extends Component {
         </View>
         {children({ imageStyle: menuExpanded ? {} : {} })}
       </Animated.View>
-
     );
   }
 }

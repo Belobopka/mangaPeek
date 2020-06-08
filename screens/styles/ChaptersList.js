@@ -1,6 +1,4 @@
-import {
-  StyleSheet,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import vars from './vars';
 
@@ -59,6 +57,5 @@ export default StyleSheet.create({
     borderColor: vars.brownWhite,
     borderRadius: 7,
   },
-  description: {
-  },
+  description: {},
 });

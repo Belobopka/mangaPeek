@@ -18,7 +18,11 @@ const nameRegex = /title="(.*?)"><img\s/;
 const linkRegex = /<a href="\/manga\/(.+?)\/"/;
 const itemScoreRegex = /<span class="item-score">(\d+\.\d+)<\/span>/;
 
-export const fetchCategoryAsync = (path, category, customParser) => async (dispatch) => {
+export const fetchCategoryAsync = (
+  path,
+  category,
+  customParser,
+) => async dispatch => {
   // eslint-disable-next-line no-undef
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'text/html');
@@ -58,7 +62,7 @@ export const fetchCategoryAsync = (path, category, customParser) => async (dispa
   }
 };
 
-export const fetchMangaGenresAsync = callback => async (dispatch) => {
+export const fetchMangaGenresAsync = callback => async dispatch => {
   // eslint-disable-next-line no-undef
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'text/html');
@@ -71,7 +75,9 @@ export const fetchMangaGenresAsync = callback => async (dispatch) => {
     });
 
     const textifiedResponse = await response.text();
-    const searchBlock = textifiedResponse.match(/<div class="tag-box">(.+?)<\/div>/);
+    const searchBlock = textifiedResponse.match(
+      /<div class="tag-box">(.+?)<\/div>/,
+    );
     const genreBlocks = searchBlock && searchBlock[0].match(/<a(.+?)<\/a>/g);
 
     const blocks = genreBlocks.reduce((accumulator, item, index) => {
@@ -100,7 +106,7 @@ export const fetchMangaGenresAsync = callback => async (dispatch) => {
   }
 };
 
-export const fetchMangaListAsync = url => async (dispatch) => {
+export const fetchMangaListAsync = url => async dispatch => {
   dispatch(setLoadingState(true, 'mangaList'));
   // eslint-disable-next-line no-undef
   const myHeaders = new Headers();
@@ -114,45 +120,15 @@ export const fetchMangaListAsync = url => async (dispatch) => {
     });
 
     const textifiedResponse = await response.text();
-    const blocks = textifiedResponse.split('<li').reduce((accumulator, value) => {
-      const imgsrc = value.match(/img.+?src="(.+?)".+?<\/a>/);
-      const name = value.match(/title="(.*?)"><img\s/);
-      const link = value.match(/<a href="\/manga\/(.+?)\/"/);
-      const itemScore = value.match(/<span class="item-score">(\d+\.\d+)<\/span>/);
-      if (!imgsrc || !name) {
-        return accumulator;
-      }
-      const block = {
-        img: imgsrc && imgsrc[1],
-        name: name && name[1],
-        link: link && mangaPath + link[1],
-        itemScore: itemScore && itemScore[1],
-      };
-      return [...accumulator, block];
-    }, []);
-    dispatch(setLoadingState(false, 'mangaList'));
-    return dispatch(setMangaList(blocks));
-  } catch (err) {
-    console.log(err);
-    dispatch(setLoadingState(false, 'mangaList'));
-  }
-};
-
-export const searchMangaAsync = filter => (dispatch) => {
-  // eslint-disable-next-line no-undef
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'text/html');
-  return fetch(searchPath + filter, {
-    mode: 'no-cors',
-    method: 'get',
-    headers: myHeaders,
-  }).then((response) => {
-    response.text().then((text) => {
-      const blocks = text.split('<li').reduce((accumulator, value) => {
+    const blocks = textifiedResponse
+      .split('<li')
+      .reduce((accumulator, value) => {
         const imgsrc = value.match(/img.+?src="(.+?)".+?<\/a>/);
         const name = value.match(/title="(.*?)"><img\s/);
         const link = value.match(/<a href="\/manga\/(.+?)\/"/);
-        const itemScore = value.match(/<span class="item-score">(\d+\.\d+)<\/span>/);
+        const itemScore = value.match(
+          /<span class="item-score">(\d+\.\d+)<\/span>/,
+        );
         if (!imgsrc || !name) {
           return accumulator;
         }
@@ -164,36 +140,82 @@ export const searchMangaAsync = filter => (dispatch) => {
         };
         return [...accumulator, block];
       }, []);
-      return dispatch(setMangaList(blocks));
-    });
-  }).catch((err) => {
+    dispatch(setLoadingState(false, 'mangaList'));
+    return dispatch(setMangaList(blocks));
+  } catch (err) {
     console.log(err);
-  });
+    dispatch(setLoadingState(false, 'mangaList'));
+  }
+};
+
+export const searchMangaAsync = filter => dispatch => {
+  // eslint-disable-next-line no-undef
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'text/html');
+  return fetch(searchPath + filter, {
+    mode: 'no-cors',
+    method: 'get',
+    headers: myHeaders,
+  })
+    .then(response => {
+      response.text().then(text => {
+        const blocks = text.split('<li').reduce((accumulator, value) => {
+          const imgsrc = value.match(/img.+?src="(.+?)".+?<\/a>/);
+          const name = value.match(/title="(.*?)"><img\s/);
+          const link = value.match(/<a href="\/manga\/(.+?)\/"/);
+          const itemScore = value.match(
+            /<span class="item-score">(\d+\.\d+)<\/span>/,
+          );
+          if (!imgsrc || !name) {
+            return accumulator;
+          }
+          const block = {
+            img: imgsrc && imgsrc[1],
+            name: name && name[1],
+            link: link && mangaPath + link[1],
+            itemScore: itemScore && itemScore[1],
+          };
+          return [...accumulator, block];
+        }, []);
+        return dispatch(setMangaList(blocks));
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 export const getMangaInfo = (htmlText, dispatch) => {
-  const description = htmlText.match(/<p class="detail-info-right-content">.+?<\/p>(.|\n)*?class="fullcontent">((.|\n)*?)<\/p>/);
-  const genres = htmlText.match(/<p class="detail-info-right-tag-list">(.+?)<\/p>/);
-  const genresArray = genres[1] && genres[1].split('<a').reduce((accumulator, value) => {
-    const link = value.match(/href="(.+?)"/);
-    const title = value.match(/title="(.+?)"/);
-    if (!title || !link) {
-      return accumulator;
-    }
+  const description = htmlText.match(
+    /<p class="detail-info-right-content">.+?<\/p>(.|\n)*?class="fullcontent">((.|\n)*?)<\/p>/,
+  );
+  const genres = htmlText.match(
+    /<p class="detail-info-right-tag-list">(.+?)<\/p>/,
+  );
+  const genresArray =
+    genres[1] &&
+    genres[1].split('<a').reduce((accumulator, value) => {
+      const link = value.match(/href="(.+?)"/);
+      const title = value.match(/title="(.+?)"/);
+      if (!title || !link) {
+        return accumulator;
+      }
 
-    const block = {
-      link: link[0] && link[1],
-      title: title[0] && title[1],
-    };
-    return [...accumulator, block];
-  }, []);
-  dispatch(setMangaInfo({
-    description: description && description[2],
-    genresArray,
-  }));
+      const block = {
+        link: link[0] && link[1],
+        title: title[0] && title[1],
+      };
+      return [...accumulator, block];
+    }, []);
+  dispatch(
+    setMangaInfo({
+      description: description && description[2],
+      genresArray,
+    }),
+  );
 };
 
-export const getMangaChaptersList = url => (dispatch) => {
+export const getMangaChaptersList = url => dispatch => {
   dispatch(setLoadingState(true, 'mangaChapters'));
   // eslint-disable-next-line no-undef
   const myHeaders = new Headers();
@@ -204,82 +226,97 @@ export const getMangaChaptersList = url => (dispatch) => {
     mode: 'no-cors',
     method: 'get',
     headers: myHeaders,
-  }).then((response) => {
-    response.text().then((text) => {
-      try {
-        getMangaInfo(text, dispatch);
-        const searchBlock = text.match(/<ul class="detail-main-list">(.+?)<\/ul>/);
-        const mangaItems = searchBlock && searchBlock[0].match(/<li(.+?)<\/li>/g);
-        const blocks = mangaItems.reduce((accumulator, value) => {
-          const name = value.match(/title="(.*?)"/);
-          const link = value.match(/<a href="\/manga\/(.+?.html)"/);
-          if (!link || !name) {
-            return accumulator;
-          }
-          const block = {
-            name: name && name[1],
-            link: link && mangaPath + link[1],
-          };
-          return [...accumulator, block];
-        }, []);
-        dispatch(setMangaChaptersList(blocks.reverse()));
-      } catch (err) {
-        console.log(err);
-      }
+  })
+    .then(response => {
+      response.text().then(text => {
+        try {
+          getMangaInfo(text, dispatch);
+          const searchBlock = text.match(
+            /<ul class="detail-main-list">(.+?)<\/ul>/,
+          );
+          const mangaItems =
+            searchBlock && searchBlock[0].match(/<li(.+?)<\/li>/g);
+          const blocks = mangaItems.reduce((accumulator, value) => {
+            const name = value.match(/title="(.*?)"/);
+            const link = value.match(/<a href="\/manga\/(.+?.html)"/);
+            if (!link || !name) {
+              return accumulator;
+            }
+            const block = {
+              name: name && name[1],
+              link: link && mangaPath + link[1],
+            };
+            return [...accumulator, block];
+          }, []);
+          dispatch(setMangaChaptersList(blocks.reverse()));
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    })
+    .catch(err => {
+      console.log(err);
     });
-  }).catch((err) => {
-    console.log(err);
-  });
 };
 
-const fetchImage = ({ url, chapterUrl }) => new Promise(async (resolve, reject) => {
-  try {
-    // eslint-disable-next-line no-undef
-    const blobHeaders = new Headers();
-    blobHeaders.append('Content-Type', 'text/html');
-    blobHeaders.append('Referer', url);
-    let blobResp = await fetch(chapterUrl, {
-      mode: 'no-cors',
-      method: 'GET',
-      headers: blobHeaders,
-    });
-    if (blobResp.status !== 200) {
-      let interval;
-      let repeatCounter = 0;
-      blobResp = await new Promise((fetchResolve) => {
-        let blobResponse;
-        interval = setInterval(async () => {
-          blobResponse = await fetch(chapterUrl, {
-            mode: 'no-cors',
-            method: 'GET',
-            headers: blobHeaders,
-          });
-          repeatCounter += 1;
-          // eslint-disable-next-line no-underscore-dangle
-          if (blobResponse._bodyText.length >= 0 || repeatCounter >= repeatMaxCounter) {
-            fetchResolve(blobResponse);
-          }
-        }, 500);
+const fetchImage = ({ url, chapterUrl }) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      // eslint-disable-next-line no-undef
+      const blobHeaders = new Headers();
+      blobHeaders.append('Content-Type', 'text/html');
+      blobHeaders.append('Referer', url);
+      let blobResp = await fetch(chapterUrl, {
+        mode: 'no-cors',
+        method: 'GET',
+        headers: blobHeaders,
       });
-      clearInterval(interval);
+      if (blobResp.status !== 200) {
+        let interval;
+        let repeatCounter = 0;
+        blobResp = await new Promise(fetchResolve => {
+          let blobResponse;
+          interval = setInterval(async () => {
+            blobResponse = await fetch(chapterUrl, {
+              mode: 'no-cors',
+              method: 'GET',
+              headers: blobHeaders,
+            });
+            repeatCounter += 1;
+            // eslint-disable-next-line no-underscore-dangle
+            if (
+              blobResponse._bodyText.length >= 0 ||
+              repeatCounter >= repeatMaxCounter
+            ) {
+              fetchResolve(blobResponse);
+            }
+          }, 500);
+        });
+        clearInterval(interval);
+      }
+      const text = await blobResp.text();
+      // eslint-disable-next-line no-eval
+      eval(text);
+      const regex = /http:.*/;
+      // eval defines d var, webpack likes to dcompress vars and we can't use d right away,
+      // so i define array
+      // eslint-disable-next-line no-undef
+      const extraImageArray = d;
+      const fixedImgArray = extraImageArray.map(imgsrc => ({
+        url: imgsrc.match(regex) ? imgsrc : `http:${imgsrc}`,
+      }));
+      resolve(fixedImgArray);
+    } catch (err) {
+      reject(err);
     }
-    const text = await blobResp.text();
-    // eslint-disable-next-line no-eval
-    eval(text);
-    const regex = /http:.*/;
-    // eval defines d var, webpack likes to dcompress vars and we can't use d right away,
-    // so i define array
-    // eslint-disable-next-line no-undef
-    const extraImageArray = d;
-    const fixedImgArray = extraImageArray.map(imgsrc => ({ url: imgsrc.match(regex) ? imgsrc : `http:${imgsrc}` }));
-    resolve(fixedImgArray);
-  } catch (err) {
-    reject(err);
-  }
-}).catch(err => ({ err }));
+  }).catch(err => ({ err }));
 
 const recursiveTimeoutFetchChapter = ({
-  url, chapterId, changedContent, dispatch, withoutProgress = false,
+  url,
+  chapterId,
+  changedContent,
+  dispatch,
+  withoutProgress = false,
 }) => {
   let timeout;
   let cancel;
@@ -287,7 +324,7 @@ const recursiveTimeoutFetchChapter = ({
   return {
     promise: new Promise((resolve, reject) => {
       let images = [];
-      cancel = (reason) => {
+      cancel = reason => {
         isRejected = true;
         console.log('reason recursiveTimeoutFetchChapter', reason);
         reject(reason);
@@ -298,43 +335,49 @@ const recursiveTimeoutFetchChapter = ({
         dispatch(setBarProgress(page));
       }
       /* TODO implement promise multiple loading Promise.all [image, image, ...images] without delay can be blocked */
-      timeout = () => setTimeout(async () => {
-        try {
-          const chapterUrl = `${changedContent}chapterfun.ashx?cid=${chapterId ? chapterId[1] : ''}&page=${page}&key=`;
-          images = await fetchImage({ url, chapterUrl });
-          if (images && images.err) {
-            reject(images.err);
-            return;
-          }
-          const slicedArray = accumulator.slice(accumulator.length - images.length, accumulator.length);
-          const preparedImages = images.reduce((reduce, item) => {
-            if (slicedArray.some(someItem => item.url === someItem.url)) {
-              return reduce;
+      timeout = () =>
+        setTimeout(async () => {
+          try {
+            const chapterUrl = `${changedContent}chapterfun.ashx?cid=${
+              chapterId ? chapterId[1] : ''
+            }&page=${page}&key=`;
+            images = await fetchImage({ url, chapterUrl });
+            if (images && images.err) {
+              reject(images.err);
+              return;
             }
-            return [...reduce, item];
-          }, []);
+            const slicedArray = accumulator.slice(
+              accumulator.length - images.length,
+              accumulator.length,
+            );
+            const preparedImages = images.reduce((reduce, item) => {
+              if (slicedArray.some(someItem => item.url === someItem.url)) {
+                return reduce;
+              }
+              return [...reduce, item];
+            }, []);
 
-          if (images && images.length <= 1) {
+            if (images && images.length <= 1) {
+              accumulator = [...accumulator, ...preparedImages];
+              resolve(accumulator);
+              return;
+            }
             accumulator = [...accumulator, ...preparedImages];
-            resolve(accumulator);
-            return;
+            page += 1;
+            if (isRejected) {
+              return;
+            }
+            if (!withoutProgress) {
+              dispatch(setBarProgress(page));
+            }
+            timeout();
+          } catch (err) {
+            isRejected = true;
+            reject(err);
           }
-          accumulator = [...accumulator, ...preparedImages];
-          page += 1;
-          if (isRejected) {
-            return;
-          }
-          if (!withoutProgress) {
-            dispatch(setBarProgress(page));
-          }
-          timeout();
-        } catch (err) {
-          isRejected = true;
-          reject(err);
-        }
-      }, 100);
+        }, 100);
       timeout();
-    }).catch((err) => {
+    }).catch(err => {
       isRejected = true;
       return { err };
     }),
@@ -342,18 +385,25 @@ const recursiveTimeoutFetchChapter = ({
   };
 };
 
-export const fetchChapter = (url, index, preload, withoutProgress = false) => (dispatch, getState) => {
+export const fetchChapter = (url, index, preload, withoutProgress = false) => (
+  dispatch,
+  getState,
+) => {
   try {
     let cancel;
     let innerPromise;
-    const { appReducer: { [preload ? 'preloadChapterPromise' : 'chapterPromise']: chapterPromise } } = getState();
+    const {
+      appReducer: {
+        [preload ? 'preloadChapterPromise' : 'chapterPromise']: chapterPromise,
+      },
+    } = getState();
     if (chapterPromise) {
       chapterPromise.cancel('Rejected by another request');
       dispatch(setMangaChapter(null));
     }
     const chapterObject = {
-      promise: new Promise(async (resolve) => {
-        cancel = (reason) => {
+      promise: new Promise(async resolve => {
+        cancel = reason => {
           if (!withoutProgress) {
             dispatch(setBarProgress(0));
           }
@@ -366,41 +416,50 @@ export const fetchChapter = (url, index, preload, withoutProgress = false) => (d
         // eslint-disable-next-line no-undef
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'text/html');
-        const respText = await (await fetch(url, {
-          mode: 'no-cors',
-          method: 'get',
-          headers: myHeaders,
-        })).text();
+        const respText = await (
+          await fetch(url, {
+            mode: 'no-cors',
+            method: 'get',
+            headers: myHeaders,
+          })
+        ).text();
 
         const chapterId = respText.match(/chapterid[\s\S]=(.*?);/);
         const content = respText.match(/meta name="og:url" content="(.*?)"/);
-        const changedContent = content && content[1].replace('mangafox.me', 'fanfox.net');
+        const changedContent =
+          content && content[1].replace('mangafox.me', 'fanfox.net');
         const imageCount = respText.match(/var imagecount=(.*?);/);
         if (!withoutProgress) {
           dispatch(setImageCount(imageCount && imageCount[1]));
         }
         innerPromise = recursiveTimeoutFetchChapter({
-          url, chapterId, changedContent, dispatch, withoutProgress,
+          url,
+          chapterId,
+          changedContent,
+          dispatch,
+          withoutProgress,
         });
-        innerPromise.promise.then((info) => {
-          dispatch(setMangaChapter(null));
-          if (info.err) {
-            console.log('err info', info.err);
-            dispatch(saveChapterImages({ err: info.err }));
-            resolve(info);
-            return;
-          }
-          if (info) {
-            if (!withoutProgress) {
-              dispatch(setBarProgress(0));
+        innerPromise.promise
+          .then(info => {
+            dispatch(setMangaChapter(null));
+            if (info.err) {
+              console.log('err info', info.err);
+              dispatch(saveChapterImages({ err: info.err }));
+              resolve(info);
+              return;
             }
-            dispatch(saveChapterImages(info, index, preload));
-            resolve(info);
-          }
-        }).catch((err) => {
-          console.log('catch innerPromise');
-          dispatch(saveChapterImages({ err }));
-        });
+            if (info) {
+              if (!withoutProgress) {
+                dispatch(setBarProgress(0));
+              }
+              dispatch(saveChapterImages(info, index, preload));
+              resolve(info);
+            }
+          })
+          .catch(err => {
+            console.log('catch innerPromise');
+            dispatch(saveChapterImages({ err }));
+          });
       }),
       cancel,
     };
