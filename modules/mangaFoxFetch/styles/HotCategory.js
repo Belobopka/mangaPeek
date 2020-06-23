@@ -1,6 +1,4 @@
-import {
-  StyleSheet,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import vars from './vars';
 
@@ -28,7 +26,6 @@ export default StyleSheet.create({
   itemText: {
     textAlign: 'center',
     width: 150,
-
   },
   itemScore: {
     position: 'absolute',

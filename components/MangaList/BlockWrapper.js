@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { memo } from 'react';
-import {
-  View,
-} from 'react-native';
+import { View } from 'react-native';
 
 import Block from './Block';
 

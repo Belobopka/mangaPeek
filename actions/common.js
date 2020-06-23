@@ -55,13 +55,17 @@ export const setCategory = (moduleName, list, category) => ({
 });
 
 export const rejectChapterLoad = () => (dispatch, getState) => {
-  const { appReducer: { chapterPromise, preloadChapterPromise } } = getState();
+  const {
+    appReducer: { chapterPromise, preloadChapterPromise },
+  } = getState();
   if (chapterPromise) {
     chapterPromise.cancel('Rejected by exit from the chapter reader');
     dispatch(setMangaChapter(null));
   }
   if (preloadChapterPromise) {
-    preloadChapterPromise.cancel('Rejected preloadChapterPromise by exit from the chapter reader');
+    preloadChapterPromise.cancel(
+      'Rejected preloadChapterPromise by exit from the chapter reader',
+    );
     dispatch(setMangaChapter(null, true));
   }
 };

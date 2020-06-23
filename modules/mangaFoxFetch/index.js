@@ -4,5 +4,9 @@ import { searchPath, mangaDirectoryUrl } from './config/Network';
 import actions from './actions';
 
 export default {
-  moduleName, actions, searchPath, mangaDirectoryUrl, blocksHorizontal,
+  moduleName,
+  actions,
+  searchPath,
+  mangaDirectoryUrl,
+  blocksHorizontal,
 };

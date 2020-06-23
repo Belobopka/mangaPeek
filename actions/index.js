@@ -6,7 +6,6 @@ import {
   setBarProgress,
 } from './common';
 
-
 // TODO fetchHotCategoryAsync fetchReadingCategoryAsync repeating
 const funcNames = {
   fetchMangaGenresAsync: 'fetchMangaGenresAsync',
@@ -20,13 +19,14 @@ const funcNames = {
   fetchAll: 'fetchAll',
 };
 
-
 // getting all of the module actions.
-const modulesReducersActions = Object.values(modules).reduce((accumulator, mod) => {
-  const { moduleName, actions } = mod;
-  return { ...accumulator, [moduleName]: actions };
-}, {});
-
+const modulesReducersActions = Object.values(modules).reduce(
+  (accumulator, mod) => {
+    const { moduleName, actions } = mod;
+    return { ...accumulator, [moduleName]: actions };
+  },
+  {},
+);
 
 const funcCaller = (funcName, getState, name, dispatch, ...extra) => {
   const moduleName = name || getState().appReducer.moduleName;
@@ -58,9 +58,9 @@ const funcCaller = (funcName, getState, name, dispatch, ...extra) => {
   const isPromise = typeof promisedFunc.then === 'function';
 
   if (isPromise) {
-    return promisedFunc.catch((err) => {
+    return promisedFunc.catch(err => {
       const error = getState().appReducer.err;
-      if (error) {
+      if (!error) {
         return;
       }
       dispatch(setError(err));
@@ -76,20 +76,36 @@ export const loadingBarInitWrapper = async (func, ...props) => {
   setBarProgress(0);
 };
 
-export const fetchMangaGenresAsync = name => (dispatch, getState) => (funcCaller(funcNames.fetchMangaGenresAsync, getState, name, dispatch));
+export const fetchMangaGenresAsync = name => (dispatch, getState) =>
+  funcCaller(funcNames.fetchMangaGenresAsync, getState, name, dispatch);
 
-export const fetchCategoryAsync = (name, path, category, customParser) => (dispatch, getState) => (funcCaller(funcNames.fetchCategoryAsync, getState, name, dispatch, path, category, customParser));
+export const fetchCategoryAsync = (name, path, category, customParser) => (
+  dispatch,
+  getState,
+) =>
+  funcCaller(
+    funcNames.fetchCategoryAsync,
+    getState,
+    name,
+    dispatch,
+    path,
+    category,
+    customParser,
+  );
 
 export const changeModuleName = moduleName => ({
   type: actionTypes.CHANGE_MODULE_NAME,
   payload: { moduleName },
 });
 
-export const fetchMangaListAsync = (url, name) => (dispatch, getState) => funcCaller(funcNames.fetchMangaListAsync, getState, name, dispatch, url);
+export const fetchMangaListAsync = (url, name) => (dispatch, getState) =>
+  funcCaller(funcNames.fetchMangaListAsync, getState, name, dispatch, url);
 
-export const searchMangaAsync = (filter, name) => (dispatch, getState) => funcCaller(funcNames.searchMangaAsync, getState, name, dispatch, filter);
+export const searchMangaAsync = (filter, name) => (dispatch, getState) =>
+  funcCaller(funcNames.searchMangaAsync, getState, name, dispatch, filter);
 
-export const getMangaChaptersList = (url, name) => (dispatch, getState) => funcCaller(funcNames.getMangaChaptersList, getState, name, dispatch, url);
+export const getMangaChaptersList = (url, name) => (dispatch, getState) =>
+  funcCaller(funcNames.getMangaChaptersList, getState, name, dispatch, url);
 
 export const setGenreCheckbox = (index, isActive) => ({
   type: actionTypes.SET_GENRE_CHECKBOX,
@@ -101,13 +117,28 @@ export const deleteMangaChapter = chapterPromise => ({
   payload: { chapterPromise },
 });
 
+export const fetchChapter = (url, name, index, preload, withoutProgress) => (
+  dispatch,
+  getState,
+) =>
+  funcCaller(
+    funcNames.fetchChapter,
+    getState,
+    name,
+    dispatch,
+    url,
+    index,
+    preload,
+    withoutProgress,
+  );
 
-export const fetchChapter = (url, name, index, preload, withoutProgress) => (dispatch, getState) => funcCaller(funcNames.fetchChapter, getState, name, dispatch, url, index, preload, withoutProgress);
-
-export const fetchAll = (name, mangaChaptersList) => (dispatch, getState) => funcCaller(funcNames.fetchAll, getState, name, dispatch, mangaChaptersList);
+export const fetchAll = (name, mangaChaptersList) => (dispatch, getState) =>
+  funcCaller(funcNames.fetchAll, getState, name, dispatch, mangaChaptersList);
 
 export const rejectChapterLoad = () => (dispatch, getState) => {
-  const { appReducer: { chapterPromise, preloadChapterPromise } } = getState();
+  const {
+    appReducer: { chapterPromise, preloadChapterPromise },
+  } = getState();
   console.log('chapter_rejectChapterLoad', chapterPromise);
   if (chapterPromise) {
     chapterPromise.cancel('Rejected by exit from the chapter reader');
@@ -115,7 +146,9 @@ export const rejectChapterLoad = () => (dispatch, getState) => {
   }
   console.log('preload_rejectChapterLoad', preloadChapterPromise);
   if (preloadChapterPromise) {
-    preloadChapterPromise.cancel('Rejected preloadChapterPromise by exit from the chapter reader');
+    preloadChapterPromise.cancel(
+      'Rejected preloadChapterPromise by exit from the chapter reader',
+    );
     dispatch(setMangaChapter(null, true));
   }
 };
