@@ -35,7 +35,7 @@
     "react-native-image-zoom-viewer": "git+https://github.com/Belobopka/react-native-image-viewer.git#18eed8a49944c39215b3e115e45932d8c1b94fc5",
     "react-native-loader": "1.2.1",
     "react-native-progress": "3.6.0",
-    "react-native-reanimated": "1.1.0",
+    "react-native-reanimated": "2.10.0",
     "react-native-screens": "1.0.0-alpha.22",
     "react-navigation": "^3.11.1",
     "react-navigation-redux-helpers": "2.0.8",
